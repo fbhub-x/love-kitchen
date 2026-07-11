@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>爱心厨房 - 情侣点菜</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 加载页面 -->
+        <div id="loading-page" class="page active">
+            <div class="loading-content">
+                <div class="heart-loader">❤️</div>
+                <h1>爱心厨房</h1>
+                <p>正在加载美味...</p>
+            </div>
+        </div>
+
+        <!-- 登录页面 -->
+        <div id="login-page" class="page">
+            <div class="login-content">
+                <div class="login-logo">
+                    <div class="logo">🍳</div>
+                    <h1>爱心厨房</h1>
+                    <p>记录我们的每一餐</p>
+                </div>
+                <div class="login-form">
+                    <div class="avatar-edit-area" id="login-avatar-area">
+                        <div class="avatar-preview" id="login-avatar-preview" onclick="toggleAvatarPicker('login')">😊</div>
+                        <input type="text" id="nickname-input" class="nickname-input" placeholder="给自己取个名字吧~" maxlength="10" oninput="onNicknameInput(this.value)">
+                    </div>
+                    <div class="avatar-picker-popup" id="login-avatar-picker" style="display:none;">
+                        <div class="avatar-picker-title">选择头像</div>
+                        <div class="avatar-picker-grid" id="login-avatar-grid"></div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-icon">📱</span>
+                        <input type="tel" id="phone-input" placeholder="请输入手机号" maxlength="11">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-icon">🔑</span>
+                        <input type="text" id="code-input" placeholder="请输入验证码" maxlength="6">
+                        <button class="code-btn" id="code-btn" onclick="sendCode()">获取验证码</button>
+                    </div>
+                    <button class="login-btn" onclick="doLogin()">登录 / 注册</button>
+                </div>
+                <div class="login-divider">
+                    <span>其他登录方式</span>
+                </div>
+                <div class="social-login">
+                    <button class="social-btn wechat" onclick="wechatLogin()">
+                        <span>微信</span>
+                        <span class="social-icon">💬</span>
+                    </button>
+                </div>
+                <p class="login-agreement">
+                    登录即表示同意 <a href="javascript:void(0)">用户协议</a> 和 <a href="javascript:void(0)">隐私政策</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- 关系绑定页面 -->
+        <div id="bind-page" class="page">
+            <div class="bind-content">
+                <div class="bind-header">
+                    <div class="bind-hearts">💕</div>
+                    <h2>绑定情侣关系</h2>
+                    <p>绑定后即可互相点菜做菜啦</p>
+                </div>
+                <div class="bind-user-info" id="bind-user-info">
+                    <!-- 用户信息由JS动态生成 -->
+                </div>
+                <div class="bind-options">
+                    <div class="bind-option-card" onclick="createInvite()">
+                        <div class="bind-option-icon">💌</div>
+                        <div class="bind-option-info">
+                            <h3>创建邀请</h3>
+                            <p>生成邀请码，发给另一半</p>
+                        </div>
+                        <span class="bind-arrow">›</span>
+                    </div>
+                    <div class="bind-option-card" onclick="showJoinInvite()">
+                        <div class="bind-option-icon">🤝</div>
+                        <div class="bind-option-info">
+                            <h3>加入邀请</h3>
+                            <p>输入对方的邀请码加入</p>
+                        </div>
+                        <span class="bind-arrow">›</span>
+                    </div>
+                </div>
+                <div class="bind-skip">
+                    <button onclick="skipBind()">暂时跳过</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 邀请码展示弹窗 -->
+        <div class="modal" id="invite-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>邀请码</h3>
+                    <button class="close-btn" onclick="closeInviteModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="invite-share-area">
+                        <p>将邀请码发给你的另一半：</p>
+                        <div class="invite-code-display" id="invite-code-display">
+                            <span id="invite-code-text">----</span>
+                            <button class="copy-btn" onclick="copyInviteCode()">复制</button>
+                        </div>
+                        <div class="qrcode-area" id="qrcode-area">
+                            <!-- 二维码由JS动态生成 -->
+                        </div>
+                        <p class="invite-tip">对方打开爱心厨房，输入此邀请码即可绑定</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 输入邀请码弹窗 -->
+        <div class="modal" id="join-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>输入邀请码</h3>
+                    <button class="close-btn" onclick="closeJoinModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="join-form">
+                        <div class="input-group">
+                            <span class="input-icon">💌</span>
+                            <input type="text" id="invite-code-input" placeholder="请输入对方的邀请码" maxlength="6">
+                        </div>
+                        <button class="login-btn" onclick="joinInvite()">确认绑定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设置页面 -->
+        <div id="settings-page" class="page">
+            <header class="app-header">
+                <button class="back-btn" onclick="goBackFromSettings()">←</button>
+                <h2>设置</h2>
+            </header>
+            <div class="settings-content">
+                <div class="settings-user-card" id="settings-user-card">
+                    <!-- 用户信息由JS动态生成 -->
+                </div>
+                <div class="avatar-picker-popup" id="settings-avatar-picker" style="display:none;">
+                    <div class="avatar-picker-title">更换头像</div>
+                    <div class="avatar-picker-grid" id="settings-avatar-grid"></div>
+                </div>
+                <div class="settings-section">
+                    <h3>关系管理</h3>
+                    <div class="settings-item" id="partner-info-area">
+                        <!-- 伴侣信息由JS动态生成 -->
+                    </div>
+                    <div class="settings-item" id="unbind-area" style="display: none;">
+                        <button class="unbind-btn" onclick="unbindPartner()">解除情侣绑定</button>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>账号</h3>
+                    <div class="settings-item" onclick="showLoginInfo()">
+                        <span>登录信息</span>
+                        <span class="settings-value" id="login-info-value">--</span>
+                        <span class="settings-arrow">›</span>
+                    </div>
+                    <div class="settings-item logout-item" onclick="doLogout()">
+                        <span>退出登录</span>
+                        <span class="settings-arrow">›</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 角色选择页面 -->
+        <div id="role-page" class="page">
+            <div class="role-content">
+                <div class="logo-area">
+                    <div class="logo">🍳</div>
+                    <h1>爱心厨房</h1>
+                    <p>记录我们的每一餐</p>
+                </div>
+                <div class="role-buttons">
+                    <button class="role-btn girl" onclick="selectRole('girl')">
+                        <span class="role-icon">👩‍🦰</span>
+                        <span class="role-title">我要点菜</span>
+                        <span class="role-desc">女朋友 / 老婆</span>
+                    </button>
+                    <button class="role-btn boy" onclick="selectRole('boy')">
+                        <span class="role-icon">👨‍🍳</span>
+                        <span class="role-title">我来做菜</span>
+                        <span class="role-desc">男朋友 / 老公</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 女方首页 -->
+        <div id="girl-home-page" class="page">
+            <header class="app-header">
+                <h2>爱心厨房</h2>
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="showOrders()">📋</button>
+                    <button class="icon-btn" onclick="switchRole()">🔄<span class="notify-dot" id="girl-role-dot" style="display:none;"></span></button>
+                    <button class="icon-btn" onclick="showSettings()">⚙️</button>
+                </div>
+            </header>
+            <div class="home-content">
+                <div class="welcome-banner">
+                    <span class="banner-emoji">🌸</span>
+                    <p>今天想吃点什么呢？</p>
+                </div>
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" id="girl-search-input" placeholder="搜索菜品..." oninput="onGirlSearch(this.value)">
+                    <span class="search-clear" id="girl-search-clear" style="display:none;" onclick="clearGirlSearch()">✕</span>
+                </div>
+                <div class="menu-layout">
+                    <div class="menu-sidebar" id="menu-sidebar">
+                        <!-- 分类由JS动态生成 -->
+                    </div>
+                    <div class="menu-main">
+                        <div class="menu-grid" id="menu-grid">
+                            <!-- 菜品卡片由JS动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav class="bottom-nav">
+                <button class="nav-btn active" onclick="showGirlHome()">
+                    <span class="nav-icon">🏠</span>
+                    <span>首页</span>
+                </button>
+                <button class="nav-btn" onclick="showCart()">
+                    <span class="nav-icon">🛒</span>
+                    <span>购物车</span>
+                    <span class="badge" id="cart-badge">0</span>
+                </button>
+                <button class="nav-btn" onclick="showOrders()">
+                    <span class="nav-icon">📋</span>
+                    <span>订单</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- 购物车页面 -->
+        <div id="cart-page" class="page">
+            <header class="app-header">
+                <button class="back-btn" onclick="showGirlHome()">←</button>
+                <h2>我的菜单</h2>
+                <button class="clear-btn" onclick="clearCart()">清空</button>
+            </header>
+            <div class="cart-content" id="cart-content">
+                <!-- 购物车内容由JS动态生成 -->
+            </div>
+            <div class="cart-note-area" id="cart-note-area" style="display: none;">
+                <div class="cart-note-display" onclick="showNoteModal()">
+                    <span class="note-icon">💬</span>
+                    <span id="cart-note-text">点击给Ta留句话...</span>
+                    <span class="note-edit">✏️</span>
+                </div>
+            </div>
+            <div class="cart-footer" id="cart-footer">
+                <div class="cart-summary">
+                    <span>共 <strong id="cart-count">0</strong> 道菜</span>
+                </div>
+                <button class="submit-order-btn" onclick="submitOrder()">下单给Ta 💕</button>
+            </div>
+        </div>
+
+        <!-- 订单页面 -->
+        <div id="orders-page" class="page">
+            <header class="app-header">
+                <button class="back-btn" onclick="goBackHome()">←</button>
+                <h2>订单记录</h2>
+            </header>
+            <div class="orders-content" id="orders-content">
+                <!-- 订单内容由JS动态生成 -->
+            </div>
+        </div>
+
+        <!-- 男方首页 -->
+        <div id="boy-home-page" class="page">
+            <header class="app-header">
+                <h2>爱心厨房</h2>
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="showBoyOrders()">📋</button>
+                    <button class="icon-btn" onclick="switchRole()">🔄<span class="notify-dot" id="boy-role-dot" style="display:none;"></span></button>
+                    <button class="icon-btn" onclick="showSettings()">⚙️</button>
+                </div>
+            </header>
+            <div class="home-content">
+                <div class="welcome-banner boy-banner">
+                    <span class="banner-emoji">👨‍🍳</span>
+                    <p>今天也要加油做菜哦！</p>
+                </div>
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <span class="stat-number" id="pending-count">0</span>
+                        <span class="stat-label">待做</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="completed-count">0</span>
+                        <span class="stat-label">已完成</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="total-count">0</span>
+                        <span class="stat-label">总订单</span>
+                    </div>
+                </div>
+                <h3 class="section-title">最新订单</h3>
+                <div class="orders-list" id="boy-orders-list">
+                    <!-- 订单列表由JS动态生成 -->
+                </div>
+            </div>
+            <nav class="bottom-nav">
+                <button class="nav-btn active" onclick="showBoyHome()">
+                    <span class="nav-icon">🏠</span>
+                    <span>首页</span>
+                </button>
+                <button class="nav-btn" onclick="showDishManage()">
+                    <span class="nav-icon">🍽️</span>
+                    <span>菜品管理</span>
+                </button>
+                <button class="nav-btn" onclick="showBoyOrders()">
+                    <span class="nav-icon">📋</span>
+                    <span>全部订单</span>
+                    <span class="badge" id="boy-badge">0</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- 男方订单详情页 -->
+        <div id="boy-orders-page" class="page">
+            <header class="app-header">
+                <button class="back-btn" onclick="showBoyHome()">←</button>
+                <h2>全部订单</h2>
+            </header>
+            <div class="orders-content" id="boy-orders-content">
+                <!-- 订单内容由JS动态生成 -->
+            </div>
+        </div>
+
+        <!-- 菜品管理页面 -->
+        <div id="dish-manage-page" class="page">
+            <header class="app-header">
+                <button class="back-btn" onclick="showBoyHome()">←</button>
+                <h2>菜品管理</h2>
+                <button class="clear-btn" onclick="showAddDishForm()" style="color: var(--primary-color); font-weight: 600;">+ 新增</button>
+            </header>
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="dish-search-input" placeholder="搜索菜品..." oninput="onDishSearch(this.value)">
+                <span class="search-clear" id="dish-search-clear" style="display:none;" onclick="clearDishSearch()">✕</span>
+            </div>
+            <div class="dish-manage-content" id="dish-manage-content">
+                <!-- 菜品列表由JS动态生成 -->
+            </div>
+        </div>
+
+        <!-- 通用弹窗 -->
+        <div class="modal" id="order-detail-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">订单详情</h3>
+                    <button class="close-btn" onclick="closeModal()">×</button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- 详情内容由JS动态生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 飘心动画层 -->
+        <div id="floating-emojis-layer"></div>
+
+        <!-- 通知横幅 -->
+        <div id="notification-banner" class="notification-banner">
+            <div class="notification-content" id="notification-content" onclick="clickNotification()">
+                <span class="notification-icon" id="notification-icon">🔔</span>
+                <span class="notification-text" id="notification-text"></span>
+            </div>
+            <button class="notification-close" onclick="dismissNotification()">×</button>
+        </div>
+
+        <!-- 点单小票弹窗 -->
+        <div class="modal" id="receipt-modal">
+            <div class="modal-content receipt-modal-content">
+                <div class="modal-header">
+                    <h3>今日点单小票 🧾</h3>
+                    <button class="close-btn" onclick="closeReceiptModal()">×</button>
+                </div>
+                <div class="modal-body" id="receipt-body">
+                    <!-- 小票内容由JS动态生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 留言弹窗 -->
+        <div class="modal" id="note-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>给Ta留句话 💬</h3>
+                    <button class="close-btn" onclick="closeNoteModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="note-form">
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">写下你想对Ta说的话，比如"少辣"、"多加葱"~</p>
+                        <textarea id="order-note-input" placeholder="比如：亲爱的，今天少辣哦~" maxlength="100"></textarea>
+                        <div class="note-quick-tags">
+                            <button class="note-tag" onclick="appendNote('少辣')">🌶️ 少辣</button>
+                            <button class="note-tag" onclick="appendNote('多加葱')">🧅 多加葱</button>
+                            <button class="note-tag" onclick="appendNote('不要香菜')">🚫 不要香菜</button>
+                            <button class="note-tag" onclick="appendNote('多放蒜')">🧄 多放蒜</button>
+                            <button class="note-tag" onclick="appendNote('清淡一点')">🍃 清淡一点</button>
+                            <button class="note-tag" onclick="appendNote('爱心满满')">❤️ 爱心满满</button>
+                        </div>
+                        <div class="note-char-count"><span id="note-count">0</span>/100</div>
+                        <button class="login-btn" onclick="saveNote()">确认留言</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 提示消息 -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
