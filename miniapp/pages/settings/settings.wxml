@@ -1,0 +1,248 @@
+<view class="page-container {{role === 'boy' ? 'boy-theme' : ''}}">
+  <!-- 顶部导航 -->
+  <view class="app-header">
+    <view style="width:36px;"></view>
+    <text>设置</text>
+    <view style="width:36px;"></view>
+  </view>
+
+  <!-- 设置内容 -->
+  <scroll-view class="settings-scroll" scroll-y>
+    <view class="settings-content">
+      <!-- 用户卡片（可点击编辑） -->
+      <view class="settings-user-card" bindtap="showEditPanel">
+        <view class="settings-avatar">
+          <image wx:if="{{isAvatarUrl}}" class="settings-avatar-img" src="{{userInfo.avatar}}" mode="aspectFill" binderror="onUserAvatarError"></image>
+          <text wx:else class="settings-avatar-emoji">{{userInfo.avatar || '👤'}}</text>
+        </view>
+        <view class="settings-user-info">
+          <text class="settings-nickname">{{userInfo.nickname || '用户'}}</text>
+          <text class="settings-role">{{roleText}}</text>
+        </view>
+        <text class="edit-hint">编辑 ✏️</text>
+      </view>
+
+      <!-- 关系管理 -->
+      <view class="settings-section">
+        <text class="settings-section-title">关系管理</text>
+
+        <block wx:if="{{partner}}">
+          <view class="settings-item">
+            <view class="partner-info-area">
+              <view class="partner-avatar">
+                <image wx:if="{{isPartnerAvatarUrl}}" class="partner-avatar-img" src="{{partner.avatar}}" mode="aspectFill" binderror="onPartnerAvatarError"></image>
+                <text wx:else class="partner-avatar-emoji">{{partner.avatar || '👤'}}</text>
+              </view>
+              <view class="partner-detail">
+                <text class="partner-name">{{partner.nickname}}</text>
+                <text class="partner-status">已绑定</text>
+              </view>
+            </view>
+          </view>
+          <view class="settings-item">
+            <view class="unbind-btn" bindtap="onUnbind">
+              <text>解除情侣绑定</text>
+            </view>
+          </view>
+        </block>
+
+        <view class="settings-item" wx:else>
+          <view class="no-partner">
+            <text class="no-partner-icon">💔</text>
+            <text class="no-partner-text">暂未绑定情侣</text>
+          </view>
+          <view class="go-bind-btn" bindtap="onGoBind">
+            <text>去绑定伴侣</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 账号 -->
+      <view class="settings-section">
+        <text class="settings-section-title">账号</text>
+        <view class="settings-item" bindtap="onShowLoginInfo">
+          <text>登录信息</text>
+          <text class="settings-value">{{loginInfoText}}</text>
+          <text class="settings-arrow">›</text>
+        </view>
+        <view class="settings-item" bindtap="showChangePwdPanel">
+          <text>修改密码</text>
+          <text class="settings-arrow">›</text>
+        </view>
+        <view class="settings-item logout-item" bindtap="onLogout">
+          <text>退出登录</text>
+          <text class="settings-arrow">›</text>
+        </view>
+        <view class="settings-item delete-account-item" bindtap="onDeleteAccount">
+          <text>注销账号</text>
+          <text class="settings-arrow">›</text>
+        </view>
+      </view>
+
+      <!-- 关于 -->
+      <view class="settings-section">
+        <text class="settings-section-title">关于</text>
+        <view class="settings-item">
+          <text>版本信息</text>
+          <text class="settings-value">v1.0.0</text>
+        </view>
+        <view class="settings-item">
+          <text>应用名称</text>
+          <text class="settings-value">爱心厨房</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 修改密码弹窗 -->
+  <view class="pwd-modal-mask" wx:if="{{showChangePwdModal}}" bindtap="closeChangePwdPanel">
+    <view class="pwd-modal-content" catchtap>
+      <!-- 步骤1：验证旧密码 -->
+      <block wx:if="{{pwdStep === 1}}">
+        <view class="modal-title">验证身份</view>
+        <text class="pwd-label">请输入旧密码</text>
+        <view class="pwd-box-row" bindtap="onPwdBoxTap">
+          <view class="pwd-box {{pwdFocused && oldPwd.length >= 1 ? 'pwd-box-filled' : ''}} {{pwdFocused && oldPwd.length === 0 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{oldPwd.length >= 1}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box {{pwdFocused && oldPwd.length >= 2 ? 'pwd-box-filled' : ''}} {{pwdFocused && oldPwd.length === 1 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{oldPwd.length >= 2}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box {{pwdFocused && oldPwd.length >= 3 ? 'pwd-box-filled' : ''}} {{pwdFocused && oldPwd.length === 2 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{oldPwd.length >= 3}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box-sep"></view>
+          <view class="pwd-box {{pwdFocused && oldPwd.length >= 4 ? 'pwd-box-filled' : ''}} {{pwdFocused && oldPwd.length === 3 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{oldPwd.length >= 4}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box {{pwdFocused && oldPwd.length >= 5 ? 'pwd-box-filled' : ''}} {{pwdFocused && oldPwd.length === 4 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{oldPwd.length >= 5}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box {{pwdFocused && oldPwd.length >= 6 ? 'pwd-box-filled' : ''}} {{pwdFocused && oldPwd.length === 5 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{oldPwd.length >= 6}}" class="pwd-dot"></view>
+          </view>
+        </view>
+        <input class="pwd-hidden-input" type="number" password value="{{oldPwd}}" bindinput="onOldPwdInput" maxlength="6" focus="{{pwdFocused}}" adjust-position="{{false}}" bindfocus="onPwdFocus" bindblur="onPwdBlur" />
+        <view class="pwd-btns">
+          <button class="pwd-btn-cancel" bindtap="closeChangePwdPanel">取消</button>
+          <button class="pwd-btn-confirm" bindtap="onVerifyOldPwd">下一步</button>
+        </view>
+      </block>
+
+      <!-- 步骤2：设置新密码 -->
+      <block wx:if="{{pwdStep === 2}}">
+        <view class="modal-title">设置新密码</view>
+        <text class="pwd-label">请输入新密码</text>
+        <view class="pwd-box-row" bindtap="onPwdBoxTap">
+          <view class="pwd-box {{pwdFocused && newPwd.length >= 1 ? 'pwd-box-filled' : ''}} {{pwdFocused && newPwd.length === 0 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{newPwd.length >= 1}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box {{pwdFocused && newPwd.length >= 2 ? 'pwd-box-filled' : ''}} {{pwdFocused && newPwd.length === 1 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{newPwd.length >= 2}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box {{pwdFocused && newPwd.length >= 3 ? 'pwd-box-filled' : ''}} {{pwdFocused && newPwd.length === 2 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{newPwd.length >= 3}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box-sep"></view>
+          <view class="pwd-box {{pwdFocused && newPwd.length >= 4 ? 'pwd-box-filled' : ''}} {{pwdFocused && newPwd.length === 3 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{newPwd.length >= 4}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box {{pwdFocused && newPwd.length >= 5 ? 'pwd-box-filled' : ''}} {{pwdFocused && newPwd.length === 4 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{newPwd.length >= 5}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box {{pwdFocused && newPwd.length >= 6 ? 'pwd-box-filled' : ''}} {{pwdFocused && newPwd.length === 5 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{newPwd.length >= 6}}" class="pwd-dot"></view>
+          </view>
+        </view>
+        <input class="pwd-hidden-input" type="number" password value="{{newPwd}}" bindinput="onNewPwdInput" maxlength="6" focus="{{pwdFocused}}" adjust-position="{{false}}" bindfocus="onPwdFocus" bindblur="onPwdBlur" />
+        <view class="pwd-btns">
+          <button class="pwd-btn-cancel" bindtap="onPwdBackToStep1">上一步</button>
+          <button class="pwd-btn-confirm" bindtap="onNewPwdNext">下一步</button>
+        </view>
+      </block>
+
+      <!-- 步骤3：确认新密码 -->
+      <block wx:if="{{pwdStep === 3}}">
+        <view class="modal-title">确认新密码</view>
+        <text class="pwd-label">请再次输入新密码</text>
+        <view class="pwd-box-row" bindtap="onPwdBoxTap">
+          <view class="pwd-box {{pwdFocused && confirmPwd.length >= 1 ? 'pwd-box-filled' : ''}} {{pwdFocused && confirmPwd.length === 0 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{confirmPwd.length >= 1}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box {{pwdFocused && confirmPwd.length >= 2 ? 'pwd-box-filled' : ''}} {{pwdFocused && confirmPwd.length === 1 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{confirmPwd.length >= 2}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box {{pwdFocused && confirmPwd.length >= 3 ? 'pwd-box-filled' : ''}} {{pwdFocused && confirmPwd.length === 2 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{confirmPwd.length >= 3}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box-sep"></view>
+          <view class="pwd-box {{pwdFocused && confirmPwd.length >= 4 ? 'pwd-box-filled' : ''}} {{pwdFocused && confirmPwd.length === 3 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{confirmPwd.length >= 4}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box {{pwdFocused && confirmPwd.length >= 5 ? 'pwd-box-filled' : ''}} {{pwdFocused && confirmPwd.length === 4 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{confirmPwd.length >= 5}}" class="pwd-dot"></view>
+          </view>
+          <view class="pwd-box {{pwdFocused && confirmPwd.length >= 6 ? 'pwd-box-filled' : ''}} {{pwdFocused && confirmPwd.length === 5 ? 'pwd-box-cursor' : ''}}">
+            <view wx:if="{{confirmPwd.length >= 6}}" class="pwd-dot"></view>
+          </view>
+        </view>
+        <input class="pwd-hidden-input" type="number" password value="{{confirmPwd}}" bindinput="onConfirmPwdInput" maxlength="6" focus="{{pwdFocused}}" adjust-position="{{false}}" bindfocus="onPwdFocus" bindblur="onPwdBlur" />
+        <view class="pwd-btns">
+          <button class="pwd-btn-cancel" bindtap="onPwdBackToStep2">上一步</button>
+          <button class="pwd-btn-confirm" bindtap="onConfirmChangePwd">确认修改</button>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 心碎弹窗 -->
+  <view class="unbind-overlay" wx:if="{{showUnbindAnim}}">
+    <view class="unbind-heart">💔</view>
+    <view class="unbind-text">绑定已解除</view>
+  </view>
+
+  <!-- 编辑个人信息弹窗 -->
+  <view class="modal-mask" wx:if="{{showEditModal}}" bindtap="closeEditPanel">
+    <view class="modal-content" catchtap="noop">
+      <view class="modal-title">编辑个人信息</view>
+
+      <!-- 头像选择 -->
+      <view class="edit-avatar-row">
+        <view class="edit-avatar-preview">{{editAvatar}}</view>
+        <text class="edit-avatar-tip">选择一个喜欢的头像</text>
+        <view class="edit-emoji-grid">
+          <view
+            class="edit-emoji-item {{editAvatar === item ? 'edit-emoji-item-active' : ''}}"
+            wx:for="{{emojiList}}"
+            wx:key="*this"
+            data-emoji="{{item}}"
+            bindtap="onSelectEditEmoji"
+          >{{item}}</view>
+        </view>
+      </view>
+
+      <!-- 昵称输入 -->
+      <view class="edit-form-row">
+        <text class="edit-form-label">昵称</text>
+        <input
+          class="edit-form-input"
+          type="nickname"
+          placeholder="请输入昵称"
+          value="{{editNickname}}"
+          bindinput="onEditNickInput"
+          bindblur="onEditNickBlur"
+        />
+      </view>
+
+      <!-- 按钮 -->
+      <view class="edit-btns">
+        <view class="edit-btn-cancel" bindtap="closeEditPanel">
+          <text>取消</text>
+        </view>
+        <view class="edit-btn-save" bindtap="saveProfile">
+          <text>保存</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,9 @@
+{
+  "name": "partner",
+  "version": "1.0.0",
+  "description": "情侣关系云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

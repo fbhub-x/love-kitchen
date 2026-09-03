@@ -1,0 +1,18 @@
+/* 购物车页 - 全局样式已覆盖大部分，此处仅补充页面特有样式 */
+
+.container {
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.delete-btn {
+  padding: 4px 10px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--danger);
+  flex-shrink: 0;
+}

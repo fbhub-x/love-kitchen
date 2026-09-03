@@ -1,0 +1,159 @@
+<view class="page-container">
+  <!-- 顶部导航栏 -->
+  <view class="app-header">
+    <view style="width:36px;"></view>
+    <text>菜品管理</text>
+    <view class="add-dish-btn" bindtap="showAddDialog">
+      <text class="add-dish-btn-text">+ 新增</text>
+    </view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-bar-wrap">
+    <view class="search-bar">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索菜品名称..."
+        value="{{searchTerm}}"
+        bindinput="onSearchInput"
+      />
+      <text
+        class="search-clear"
+        wx:if="{{showSearchClear}}"
+        bindtap="onClearSearch"
+      >✕</text>
+    </view>
+  </view>
+
+  <!-- 菜品列表 -->
+  <scroll-view class="dish-list" scroll-y wx:if="{{filteredDishes.length > 0}}">
+    <view class="dish-card" wx:for="{{filteredDishes}}" wx:key="_id">
+      <view class="dish-left">
+        <view class="dish-emoji">{{item.emoji}}</view>
+        <view class="dish-info">
+          <view class="dish-name">{{item.name}}</view>
+          <view class="dish-meta">
+            <text class="dish-cat">{{item.categoryLabel}}</text>
+            <text class="dish-time">⏱️ {{item.time}}</text>
+          </view>
+          <view class="dish-desc">{{item.desc}}</view>
+        </view>
+      </view>
+      <view class="dish-actions">
+        <view class="action-btn edit-btn" bindtap="editDish" data-index="{{index}}">
+          <text>编辑</text>
+        </view>
+        <view class="action-btn delete-btn" bindtap="deleteDish" data-id="{{item._id}}" data-name="{{item.name}}">
+          <text>删除</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{filteredDishes.length === 0}}">
+    <text class="empty-icon">🍽️</text>
+    <text class="empty-text">{{searchTerm ? '未找到相关菜品' : '还没有菜品'}}</text>
+    <text class="empty-hint">{{searchTerm ? '换个关键词试试' : '点击右上角「新增」添加吧'}}</text>
+  </view>
+
+  <!-- 新增/编辑弹窗 -->
+  <view class="modal-mask" wx:if="{{showModal}}" bindtap="closeModal">
+    <view class="modal-content" catchtap="noop">
+      <view class="modal-title">{{editId ? '编辑菜品' : '新增菜品'}}</view>
+
+      <view class="form-row">
+        <text class="form-label">菜品名称</text>
+        <input class="form-input" placeholder="如：番茄炒蛋" value="{{form.name}}" data-field="name" bindinput="onFieldChange"/>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">Emoji图标</text>
+        <view class="emoji-picker">
+          <view class="emoji-current" bindtap="toggleEmojiPanel">
+            <text class="emoji-current-text">{{form.emoji || '?'}}</text>
+            <text class="emoji-current-tip">点击选择</text>
+          </view>
+          <view class="emoji-grid" wx:if="{{showEmojiPanel}}">
+            <view class="emoji-option" wx:for="{{emojiList}}" wx:key="*this" bindtap="pickEmoji" data-emoji="{{item}}">
+              <text>{{item}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">分类</text>
+        <picker mode="selector" range="{{categories}}" range-key="label" value="{{form.categoryIndex}}" bindchange="onCategoryChange">
+          <view class="picker-value">
+            <text class="picker-text">{{categories[form.categoryIndex].label}}</text>
+            <text class="picker-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">描述</text>
+        <input class="form-input" placeholder="如：酸甜可口，家的味道" value="{{form.desc}}" data-field="desc" bindinput="onFieldChange"/>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">预计用时</text>
+        <input class="form-input" placeholder="如：20分钟" value="{{form.time}}" data-field="time" bindinput="onFieldChange"/>
+      </view>
+
+      <!-- 规格编辑 -->
+      <view class="form-section">
+        <view class="form-label-row">
+          <text class="form-label">规格设置</text>
+          <text class="form-hint">（可选，如分量/辣度等）</text>
+          <view class="spec-toggle-btn" bindtap="toggleSpecEdit">
+            {{showSpecEdit ? '收起' : '展开'}}
+          </view>
+        </view>
+
+        <block wx:if="{{showSpecEdit}}">
+          <!-- 已添加的规格组 -->
+          <view class="spec-group" wx:for="{{form.specs}}" wx:key="index" wx:for-index="sIdx">
+            <view class="spec-group-header">
+              <text class="spec-group-name">{{item.name}}</text>
+              <text class="spec-remove" data-index="{{sIdx}}" bindtap="removeSpec">删除</text>
+            </view>
+            <view class="spec-options-list">
+              <view class="spec-option-tag" wx:for="{{item.options}}" wx:key="*this" wx:for-item="opt" wx:for-index="oIdx">
+                {{opt}}
+                <text class="spec-option-remove" data-sindex="{{sIdx}}" data-oindex="{{oIdx}}" bindtap="removeSpecOption">✕</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 添加新规格组 -->
+          <view class="spec-add-area">
+            <input class="spec-input-name" placeholder="规格名称（如：分量）" value="{{newSpecName}}" bindinput="onSpecNameInput" />
+            <input class="spec-input-options" placeholder="选项（逗号分隔，如：小份,中份,大份）" value="{{newSpecOptions}}" bindinput="onSpecOptionsInput" />
+            <view class="spec-add-btn" bindtap="addSpec">+ 添加规格</view>
+          </view>
+        </block>
+      </view>
+
+      <view class="modal-btns">
+        <view class="btn-cancel" bindtap="closeModal">
+          <text>取消</text>
+        </view>
+        <view class="btn-save" bindtap="saveDish">
+          <text>{{editId ? '保存修改' : '添加菜品'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 菜品通知弹窗 -->
+  <view class="notif-popup" wx:if="{{showNotif}}">
+    <view class="notif-icon">{{notifIcon || '🍽️'}}</view>
+    <view class="notif-text">
+      <text class="notif-title">{{notifTitle}}</text>
+      <text class="notif-desc">{{notifDesc}}</text>
+    </view>
+  </view>
+</view>

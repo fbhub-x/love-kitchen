@@ -1,0 +1,125 @@
+<view class="splash">
+  <view class="splash-logo">💕</view>
+  <view class="splash-title">爱心厨房</view>
+  <view class="splash-desc">记录我们的每一餐</view>
+
+  <!-- 步骤0：角色选择 -->
+  <view class="role-btns" wx:if="{{!selectedRole}}">
+    <view class="role-btn girl-btn" bindtap="selectRole" data-role="girl">
+      <view class="role-avatar">👩‍🦰</view>
+      <view class="role-label">我要点菜</view>
+      <view class="role-sub">女朋友 / 老婆</view>
+    </view>
+    <view class="role-btn boy-btn" bindtap="selectRole" data-role="boy">
+      <view class="role-avatar">👨‍🍳</view>
+      <view class="role-label">我来做菜</view>
+      <view class="role-sub">男朋友 / 老公</view>
+    </view>
+  </view>
+
+  <!-- 步骤1：手机号 + 密码 -->
+  <view class="auth-card" wx:if="{{selectedRole && loginStep === 1}}">
+    <view class="auth-title">{{selectedRole === 'girl' ? '女神登录' : '大厨登录'}}</view>
+    <view class="auth-desc">输入手机号和密码</view>
+
+    <!-- 手机号 -->
+    <view class="phone-row">
+      <input
+        class="phone-input"
+        type="number"
+        placeholder="输入手机号"
+        value="{{phone}}"
+        bindinput="onPhoneInput"
+        maxlength="11"
+      />
+    </view>
+
+    <!-- PIN 密码 -->
+    <view class="pin-row">
+      <text class="pin-label">6位数字密码</text>
+      <view class="pin-box-row" bindtap="onPinBoxTap">
+        <view class="pin-box {{pinFocused && password.length >= 1 ? 'pin-box-filled' : ''}} {{pinFocused && password.length === 0 ? 'pin-box-cursor' : ''}}">
+          <view wx:if="{{password.length >= 1}}" class="pin-dot"></view>
+        </view>
+        <view class="pin-box {{pinFocused && password.length >= 2 ? 'pin-box-filled' : ''}} {{pinFocused && password.length === 1 ? 'pin-box-cursor' : ''}}">
+          <view wx:if="{{password.length >= 2}}" class="pin-dot"></view>
+        </view>
+        <view class="pin-box {{pinFocused && password.length >= 3 ? 'pin-box-filled' : ''}} {{pinFocused && password.length === 2 ? 'pin-box-cursor' : ''}}">
+          <view wx:if="{{password.length >= 3}}" class="pin-dot"></view>
+        </view>
+        <view class="pin-box-sep"></view>
+        <view class="pin-box {{pinFocused && password.length >= 4 ? 'pin-box-filled' : ''}} {{pinFocused && password.length === 3 ? 'pin-box-cursor' : ''}}">
+          <view wx:if="{{password.length >= 4}}" class="pin-dot"></view>
+        </view>
+        <view class="pin-box {{pinFocused && password.length >= 5 ? 'pin-box-filled' : ''}} {{pinFocused && password.length === 4 ? 'pin-box-cursor' : ''}}">
+          <view wx:if="{{password.length >= 5}}" class="pin-dot"></view>
+        </view>
+        <view class="pin-box {{pinFocused && password.length >= 6 ? 'pin-box-filled' : ''}} {{pinFocused && password.length === 5 ? 'pin-box-cursor' : ''}}">
+          <view wx:if="{{password.length >= 6}}" class="pin-dot"></view>
+        </view>
+      </view>
+      <input
+        class="pin-hidden-input"
+        type="number"
+        password
+        value="{{password}}"
+        bindinput="onPasswordInput"
+        maxlength="6"
+        focus="{{pinFocused}}"
+        adjust-position="{{true}}"
+        cursor-spacing="120"
+        bindfocus="onPinFocus"
+        bindblur="onPinBlur"
+      />
+    </view>
+
+    <!-- 确认按钮 -->
+    <button class="confirm-btn" bindtap="onStep1Next">{{phone && password.length === 6 ? '登录 / 注册' : '下一步'}}</button>
+
+    <!-- 返回选择角色 -->
+    <view class="back-role" bindtap="backToRole">
+      <text>← 重新选择角色</text>
+    </view>
+  </view>
+
+  <!-- 步骤2：新用户完善信息 -->
+  <view class="auth-card" wx:if="{{selectedRole && loginStep === 2}}">
+    <view class="auth-title">完善个人信息</view>
+    <view class="auth-desc">新用户，请设置头像和昵称</view>
+
+    <!-- 头像选择 -->
+    <view class="avatar-row">
+      <view class="avatar-preview">{{avatarUrl || defaultAvatar}}</view>
+      <text class="avatar-tip">选择一个喜欢的头像</text>
+      <view class="emoji-grid">
+        <view
+          class="emoji-item {{(avatarUrl || defaultAvatar) === item ? 'emoji-item-active' : ''}}"
+          wx:for="{{emojiList}}"
+          wx:key="*this"
+          data-emoji="{{item}}"
+          bindtap="onSelectEmoji"
+        >{{item}}</view>
+      </view>
+    </view>
+
+    <!-- 昵称输入 -->
+    <view class="nick-row">
+      <input
+        class="nick-input"
+        type="nickname"
+        placeholder="点击输入昵称"
+        value="{{nickname}}"
+        bindinput="onNickInput"
+        bindblur="onNickBlur"
+      />
+    </view>
+
+    <!-- 确认注册 -->
+    <button class="confirm-btn" bindtap="onStep2Confirm">确认注册</button>
+
+    <!-- 返回上一步 -->
+    <view class="back-role" bindtap="backToStep1">
+      <text>← 返回上一步</text>
+    </view>
+  </view>
+</view>

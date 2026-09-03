@@ -1,0 +1,583 @@
+/* boy-dishes.wxss - 菜品管理页样式 */
+
+.page-container {
+  height: 100vh;
+  background: #f0f4f8;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ===== 顶部导航栏 ===== */
+.app-header {
+  background: #4a90d9 !important;
+}
+
+.app-header text {
+  color: #fff !important;
+}
+
+.back-btn {
+  color: #fff !important;
+}
+
+.header-actions .icon-btn {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ===== 新增按钮 ===== */
+.add-dish-btn {
+  background: linear-gradient(135deg, #52c41a, #389e0d);
+  border-radius: 20px;
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.3);
+}
+
+.add-dish-btn-text {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ===== 搜索栏 ===== */
+.search-bar-wrap {
+  padding: 10px 16px 6px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 22px;
+  padding: 0 14px;
+  height: 40px;
+  box-shadow: 0 2px 6px rgba(74, 144, 217, 0.06);
+}
+
+.search-icon {
+  font-size: 16px;
+  color: #aaa;
+  margin-right: 8px;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+  height: 40px;
+  line-height: 40px;
+}
+
+.search-clear {
+  font-size: 16px;
+  color: #ccc;
+  padding: 4px;
+}
+
+/* ===== 菜品列表 ===== */
+.dish-list {
+  flex: 1;
+  padding: 12px 16px 80px;
+  overflow: hidden;
+}
+
+.dish-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(74, 144, 217, 0.06);
+}
+
+.dish-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.dish-emoji {
+  font-size: 32px;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #e8f0fa, #d0e3f5);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.dish-info {
+  width: 140px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.dish-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dish-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.dish-cat {
+  font-size: 11px;
+  color: #4a90d9;
+  background: #e8f0fa;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.dish-time {
+  font-size: 12px;
+  color: #999;
+}
+
+.dish-desc {
+  font-size: 12px;
+  color: #ccc;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dish-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.action-btn {
+  font-size: 12px;
+  padding: 6px 16px;
+  border-radius: 14px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.edit-btn {
+  border-color: #4a90d9;
+}
+
+.edit-btn text {
+  color: #4a90d9;
+}
+
+.delete-btn {
+  border-color: #ff4757;
+}
+
+.delete-btn text {
+  color: #ff4757;
+}
+
+/* ===== 空状态 ===== */
+.empty-state {
+  text-align: center;
+  padding: 100px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.empty-icon {
+  font-size: 56px;
+}
+
+.empty-text {
+  font-size: 16px;
+  color: #999;
+}
+
+.empty-hint {
+  font-size: 13px;
+  color: #ccc;
+}
+
+/* ===== 弹窗 ===== */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px calc(32px + env(safe-area-inset-bottom));
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+/* 表单行：每行一个字段，label 在上方，input 在下方 */
+.form-row {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  display: block;
+  line-height: 1.4;
+}
+
+.form-input {
+  background: #f8f8f8;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding-left: 16px;
+  padding-right: 16px;
+  font-size: 15px;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  box-sizing: border-box;
+  color: #333;
+}
+
+.picker-value {
+  background: #f8f8f8;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.picker-text {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.picker-arrow {
+  font-size: 18px;
+  color: #ccc;
+  line-height: 1;
+}
+
+/* Emoji 选择器 */
+.emoji-picker {
+  width: 100%;
+}
+
+.emoji-current {
+  background: #f8f8f8;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.emoji-current-text {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.emoji-current-tip {
+  font-size: 13px;
+  color: #ccc;
+}
+
+.emoji-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 10px;
+  background: #f8f8f8;
+  border-radius: 10px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.emoji-option {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.emoji-option:active {
+  background: #e8f0fa;
+}
+
+/* ===== 规格编辑 ===== */
+.form-section {
+  margin-bottom: 18px;
+}
+
+.form-label-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.form-label-row .form-label {
+  margin-bottom: 0;
+}
+
+.form-hint {
+  font-size: 12px;
+  color: #ccc;
+  margin-left: 4px;
+  line-height: 1.4;
+}
+
+.spec-toggle-btn {
+  margin-left: auto;
+  font-size: 13px;
+  color: #4a90d9;
+  background: #e8f0fa;
+  padding: 4px 12px;
+  border-radius: 12px;
+  line-height: 1.6;
+}
+
+.spec-toggle-btn:active {
+  background: #d0e3f5;
+}
+
+/* 已添加的规格组 */
+.spec-group {
+  background: #f8fbff;
+  border: 1px solid #e8f0fa;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.spec-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.spec-group-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a90d9;
+}
+
+.spec-remove {
+  font-size: 12px;
+  color: #ff4757;
+  padding: 2px 8px;
+}
+
+.spec-remove:active {
+  opacity: 0.6;
+}
+
+.spec-options-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.spec-option-tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid #d0e3f5;
+  border-radius: 14px;
+  padding: 4px 10px;
+  font-size: 13px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.spec-option-remove {
+  font-size: 12px;
+  color: #ff4757;
+  margin-left: 2px;
+}
+
+.spec-option-remove:active {
+  opacity: 0.6;
+}
+
+/* 添加新规格组区域 */
+.spec-add-area {
+  background: #f8f8f8;
+  border: 1px dashed #d0e3f5;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spec-input-name,
+.spec-input-options {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 14px;
+  height: 40px;
+  line-height: 40px;
+  width: 100%;
+  box-sizing: border-box;
+  color: #333;
+}
+
+.spec-input-name:focus,
+.spec-input-options:focus {
+  border-color: #4a90d9;
+}
+
+.spec-add-btn {
+  background: linear-gradient(135deg, #4a90d9, #357abd);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 2px;
+}
+
+.spec-add-btn:active {
+  opacity: 0.85;
+}
+
+.modal-btns {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.btn-cancel {
+  flex: 1;
+  background: #f5f5f5;
+  border-radius: 24px;
+  padding: 14px;
+  font-size: 15px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-cancel text {
+  color: #999;
+  font-size: 15px;
+}
+
+.btn-save {
+  flex: 2;
+  background: linear-gradient(135deg, #4a90d9, #357abd);
+  border-radius: 24px;
+  padding: 14px;
+  font-size: 15px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-save text {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* 菜品新增通知弹窗 */
+.notif-popup {
+  position: fixed;
+  top: 80px;
+  left: 16px;
+  right: 16px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  z-index: 9999;
+  animation: notifSlideIn 0.3s ease;
+}
+
+@keyframes notifSlideIn {
+  from { transform: translateY(-100px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.notif-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.notif-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.notif-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.notif-desc {
+  font-size: 13px;
+  color: #4a90d9;
+}

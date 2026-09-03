@@ -1,0 +1,77 @@
+<view class="container">
+  <!-- 步骤2：绑定伴侣 -->
+  <view class="setup-card" wx:if="{{step === 2}}">
+    <view class="step-title">绑定伴侣</view>
+    <view class="step-desc">通过邀请码绑定你的另一半</view>
+
+    <!-- 创建邀请码 -->
+    <view class="bind-section">
+      <button class="btn-outline" bindtap="createInvite" style="width:100%;">
+        {{inviteCode ? '刷新邀请码' : '生成我的邀请码'}}
+      </button>
+
+      <view class="invite-code-box" wx:if="{{inviteCode}}">
+        <text class="invite-label">你的邀请码</text>
+        <view class="invite-code-row">
+          <text class="invite-code-text">{{inviteCode}}</text>
+          <view class="copy-btn" bindtap="copyInviteCode">
+            <text>复制</text>
+          </view>
+        </view>
+        <text class="invite-expire" wx:if="{{inviteExpireText}}">⏰ {{inviteExpireText}}后过期</text>
+        <text class="invite-hint">把这个邀请码发给你的伴侣</text>
+      </view>
+    </view>
+
+    <view class="divider">
+      <view class="divider-line"></view>
+      <text class="divider-text">或</text>
+      <view class="divider-line"></view>
+    </view>
+
+    <!-- 加入伴侣 -->
+    <view class="bind-section">
+      <button class="btn-outline" bindtap="showJoin" style="width:100%;">输入邀请码加入</button>
+
+      <view class="join-box" wx:if="{{showJoinInput}}">
+        <input class="form-input" placeholder="输入6位邀请码" value="{{joinCode}}" bindinput="onJoinInput" maxlength="6"/>
+        <button class="btn-primary" bindtap="joinPartner" style="width:100%;margin-top:12px;">加入</button>
+      </view>
+    </view>
+
+    <view class="skip-bind" bindtap="goHome">
+      <text>稍后绑定，先逛逛 →</text>
+    </view>
+  </view>
+
+  <!-- 步骤3：绑定成功 -->
+  <view class="setup-card bind-success-card" wx:if="{{step === 3}}">
+    <view class="success-ring">
+      <view class="success-ring-outer"></view>
+      <view class="success-ring-inner"></view>
+      <view class="success-check-icon">✓</view>
+    </view>
+    <view class="step-title">绑定成功</view>
+    <view class="bind-partner-row">
+      <view class="bind-avatar-circle bind-avatar-left">
+        <image wx:if="{{myAvatarIsUrl}}" class="bind-avatar-img" src="{{myAvatar}}" mode="aspectFill" binderror="onMyAvatarError"></image>
+        <text wx:else class="bind-avatar-emoji">{{myAvatar}}</text>
+      </view>
+      <view class="bind-connect-line">
+        <text class="bind-heart">❤️</text>
+      </view>
+      <view class="bind-avatar-circle bind-avatar-right">
+        <image wx:if="{{partnerAvatarIsUrl}}" class="bind-avatar-img" src="{{partnerAvatar}}" mode="aspectFill" binderror="onPartnerAvatarError"></image>
+        <text wx:else class="bind-avatar-emoji">{{partnerAvatar}}</text>
+      </view>
+    </view>
+    <view class="bind-subtitle">你们已成功绑定，开始甜蜜的厨房之旅吧</view>
+    <button class="btn-primary" bindtap="goHome" style="width:100%;margin-top:20px;">进入爱心厨房 💕</button>
+  </view>
+
+  <!-- 心碎弹窗 -->
+  <view class="unbind-overlay" wx:if="{{showUnbindAnim}}">
+    <view class="unbind-heart">💔</view>
+    <view class="unbind-text">绑定已解除</view>
+  </view>
+</view>

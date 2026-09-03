@@ -1,0 +1,66 @@
+<view class="container">
+  <!-- 顶部导航 -->
+  <view class="app-header">
+    <view style="width:36px;"></view>
+    <text>购物车</text>
+    <view style="width:36px;"></view>
+  </view>
+
+  <!-- 购物车内容 -->
+  <view class="cart-content">
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{cart.length === 0}}">
+      <text class="empty-state-icon">🛒</text>
+      <text class="empty-state-text">购物车是空的</text>
+      <text class="empty-state-hint">去首页添加菜品吧~</text>
+    </view>
+
+    <!-- 购物车商品列表 -->
+    <block wx:else>
+      <view class="cart-item" wx:for="{{cart}}" wx:key="_id">
+        <text class="cart-item-image">{{item.emoji}}</text>
+        <view class="cart-item-info">
+          <text class="cart-item-name">{{item.name}}</text>
+          <text class="cart-item-desc">{{item.desc}}</text>
+        </view>
+        <view class="cart-item-actions">
+          <view class="qty-btn" bindtap="decreaseQty" data-id="{{item._id}}">-</view>
+          <text class="qty-num">{{item.count}}</text>
+          <view class="qty-btn" bindtap="increaseQty" data-id="{{item._id}}">+</view>
+        </view>
+      </view>
+
+      <!-- 备注 -->
+      <view class="cart-note">
+        <view class="note-tags-label">快捷备注</view>
+        <view class="note-tags">
+          <view
+            class="note-tag {{item.selected ? 'note-tag-active' : ''}}"
+            wx:for="{{quickNotes}}"
+            wx:key="text"
+            data-index="{{index}}"
+            bindtap="onQuickNote"
+          >
+            <text class="note-tag-emoji">{{item.emoji}}</text>
+            <text class="note-tag-text">{{item.text}}</text>
+            <view class="note-tag-check" wx:if="{{item.selected}}">✓</view>
+          </view>
+        </view>
+        <textarea
+          class="note-textarea"
+          placeholder="备注留言（如：少放盐哦~）"
+          value="{{note}}"
+          bindinput="onNoteInput"
+          maxlength="200"
+          disable-default-padding
+          auto-height
+        />
+      </view>
+
+      <!-- 提交按钮 -->
+      <view class="submit-btn" bindtap="submitOrder">
+        <text>下单给Ta 💕</text>
+      </view>
+    </block>
+  </view>
+</view>

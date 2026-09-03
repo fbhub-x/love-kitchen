@@ -1,0 +1,261 @@
+<!-- girl-home page -->
+<view class="page-container">
+  <!-- 顶部导航栏 -->
+  <view class="app-header">
+    <text>爱心厨房</text>
+    <view class="header-actions">
+      <view class="icon-btn" bindtap="onGoToOrders">📋</view>
+      <view class="icon-btn" bindtap="onSwitchRole">🔄</view>
+      <view class="icon-btn" bindtap="onGoToSettings">⚙️</view>
+    </view>
+  </view>
+
+  <!-- 欢迎横幅 -->
+  <view class="welcome-banner">
+    <text class="banner-emoji">🌸</text>
+    <view>今天想吃点什么呢？</view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <text class="search-icon">🔍</text>
+    <input
+      class="search-input"
+      placeholder="搜索美食..."
+      value="{{searchTerm}}"
+      bindinput="onSearchInput"
+    />
+    <text
+      class="search-clear"
+      wx:if="{{showSearchClear}}"
+      bindtap="onClearSearch"
+    >✕</text>
+  </view>
+
+  <!-- 菜单布局：左侧分类 + 右侧菜品 -->
+  <view class="dish-layout">
+    <!-- 左侧分类栏 -->
+    <view class="dish-sidebar">
+      <view
+        wx:for="{{categories}}"
+        wx:key="key"
+        class="dish-sidebar-item {{activeCategory === item.key ? 'dish-sidebar-active' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="filterCategory"
+      >
+        <text class="dish-sidebar-icon">{{item.icon}}</text>
+        <text class="dish-sidebar-label">{{item.label}}</text>
+      </view>
+    </view>
+
+    <!-- 右侧菜品列表 -->
+    <scroll-view
+      class="dish-scroll"
+      style="height: {{scrollHeight}}px"
+      scroll-y
+      scroll-into-view="{{scrollIntoView}}"
+      bindscroll="bindMenuScroll"
+    >
+      <view class="dish-scroll-inner">
+        <!-- 空状态 -->
+        <view class="dish-empty" wx:if="{{filteredCategoryGroups.length === 0}}">
+          <text class="dish-empty-icon">🍽️</text>
+          <text class="dish-empty-text">暂无相关菜品</text>
+        </view>
+
+        <!-- 分类分组 -->
+        <block wx:for="{{filteredCategoryGroups}}" wx:key="category" wx:for-item="group">
+          <view class="dish-group" id="cat-{{group.category}}">
+            <view class="dish-group-title">{{group.label}}</view>
+            <view
+              wx:for="{{group.dishes}}"
+              wx:key="_id"
+              wx:for-item="dish"
+              class="dish-item-card"
+            >
+              <view class="dish-item-emoji">{{dish.emoji}}</view>
+              <view class="dish-item-info">
+                <view class="dish-item-name">{{dish.name}}</view>
+                <view class="dish-item-desc">{{dish.desc}}</view>
+                <view class="dish-item-bottom">
+                  <text class="dish-item-time">⏱ {{dish.time}}</text>
+
+                  <!-- 数量为0时：显示「+」或「选规格」按钮 -->
+                  <block wx:if="{{!dishCounts[dish._id]}}">
+                    <!-- 有规格：显示「选规格」 -->
+                    <view
+                      wx:if="{{dish.specs && dish.specs.length}}"
+                      class="gh-spec-btn"
+                      data-dish="{{dish}}"
+                      bindtap="openSpecPanel"
+                      hover-class="gh-spec-btn-hover"
+                    >选规格</view>
+                    <!-- 无规格：显示「+」 -->
+                    <view
+                      wx:else
+                      class="dish-add-btn {{flyAnim ? 'dish-add-pop' : ''}}"
+                      data-dish="{{dish}}"
+                      bindtap="addToCart"
+                      hover-class="dish-add-hover"
+                    >
+                      <text class="dish-add-text">+</text>
+                    </view>
+                  </block>
+
+                  <!-- 数量大于0时：显示「- 数量 +」控件 -->
+                  <view wx:else class="gh-stepper">
+                    <view
+                      class="gh-stepper-btn gh-stepper-minus"
+                      data-dish="{{dish}}"
+                      bindtap="decDishCount"
+                    >−</view>
+                    <text class="gh-stepper-num">{{dishCounts[dish._id]}}</text>
+                    <view
+                      class="gh-stepper-btn gh-stepper-plus"
+                      data-dish="{{dish}}"
+                      bindtap="incDishCount"
+                    >+</view>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 购物车底部栏（替代原 bottom-nav） -->
+  <view class="gh-cart-bar">
+    <!-- 购物车为空 -->
+    <view wx:if="{{cartTotalCount === 0}}" class="gh-cart-empty">
+      <text class="gh-cart-empty-text">🛒 购物车是空的</text>
+    </view>
+    <!-- 购物车有商品 -->
+    <view wx:else class="gh-cart-bar-inner">
+      <view class="gh-cart-icon-wrap {{cartBounce ? 'cart-bounce' : ''}}" bindtap="toggleCartPanel">
+        <text class="gh-cart-icon">🛒</text>
+        <view class="gh-cart-badge">{{cartTotalCount > 99 ? '99+' : cartTotalCount}}</view>
+      </view>
+      <view class="gh-cart-info" bindtap="toggleCartPanel">
+        <text class="gh-cart-total-num">共{{cartTotalCount}}件</text>
+      </view>
+      <view class="gh-cart-checkout-btn" bindtap="onGoToCart">去结算</view>
+    </view>
+  </view>
+
+  <!-- 飞入购物车动画球 -->
+  <view
+    class="fly-ball {{flyBallShow ? (flyBallPhase ? 'fly-ball-flying' : 'fly-ball-start') : ''}}"
+    style="left:{{flyBallX}}px;top:{{flyBallY}}px;"
+  >
+    <view class="fly-ball-inner">
+      <text>{{flyBallEmoji}}</text>
+    </view>
+  </view>
+
+  <!-- 规格选择面板遮罩 -->
+  <view
+    class="gh-mask {{specPanelShow ? 'gh-mask-show' : ''}}"
+    catchtap="closeSpecPanel"
+    catchtouchmove="noop"
+  ></view>
+
+  <!-- 规格选择面板 -->
+  <view class="gh-spec-panel {{specPanelShow ? 'gh-spec-panel-show' : ''}}" catchtouchmove="noop">
+    <view class="gh-spec-header">
+      <view class="gh-spec-dish-emoji">{{specPanelDish.emoji}}</view>
+      <view class="gh-spec-dish-info">
+        <view class="gh-spec-dish-name">{{specPanelDish.name}}</view>
+        <view class="gh-spec-dish-desc">{{specPanelDish.desc}}</view>
+      </view>
+      <view class="gh-spec-close" bindtap="closeSpecPanel">✕</view>
+    </view>
+
+    <view class="gh-spec-body">
+      <block wx:for="{{specPanelDish.specs}}" wx:key="name" wx:for-item="spec">
+        <view class="gh-spec-group">
+          <view class="gh-spec-group-title">{{spec.name}}</view>
+          <view class="gh-spec-options">
+            <view
+              wx:for="{{spec.options}}"
+              wx:key="*this"
+              wx:for-item="opt"
+              class="gh-spec-option {{specSelected[spec.name] === opt ? 'gh-spec-option-active' : ''}}"
+              data-spec="{{spec.name}}"
+              data-opt="{{opt}}"
+              bindtap="selectSpec"
+            >{{opt}}</view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="gh-spec-footer">
+      <view class="gh-spec-stepper">
+        <view class="gh-spec-stepper-btn" bindtap="specDecCount">−</view>
+        <text class="gh-spec-stepper-num">{{specCount}}</text>
+        <view class="gh-spec-stepper-btn" bindtap="specIncCount">+</view>
+      </view>
+      <view class="gh-spec-add-btn" bindtap="addSpecToCart">加入购物车</view>
+    </view>
+  </view>
+
+  <!-- 购物车面板遮罩 -->
+  <view
+    class="gh-mask {{cartPanelShow ? 'gh-mask-show' : ''}}"
+    catchtap="closeCartPanel"
+    catchtouchmove="noop"
+  ></view>
+
+  <!-- 购物车面板 -->
+  <view class="gh-cart-panel {{cartPanelShow ? 'gh-cart-panel-show' : ''}}" catchtouchmove="noop">
+    <view class="gh-cart-panel-header">
+      <text class="gh-cart-panel-title">购物车</text>
+      <view class="gh-cart-panel-clear" bindtap="clearCart">清空</view>
+    </view>
+
+    <scroll-view class="gh-cart-panel-list" scroll-y>
+      <view
+        wx:for="{{cart}}"
+        wx:key="cartKey"
+        wx:for-item="item"
+        class="gh-cart-item"
+      >
+        <view class="gh-cart-item-emoji">{{item.emoji}}</view>
+        <view class="gh-cart-item-info">
+          <view class="gh-cart-item-name">{{item.name}}</view>
+          <view class="gh-cart-item-specs" wx:if="{{item.specs}}">{{item.specs}}</view>
+          <view class="gh-cart-item-price" wx:if="{{item.price}}">¥{{item.price}}</view>
+        </view>
+        <view class="gh-cart-item-stepper">
+          <view
+            class="gh-stepper-btn gh-stepper-minus"
+            data-cart-key="{{item.cartKey}}"
+            bindtap="decCartItem"
+          >−</view>
+          <text class="gh-stepper-num">{{item.count}}</text>
+          <view
+            class="gh-stepper-btn gh-stepper-plus"
+            data-cart-key="{{item.cartKey}}"
+            bindtap="incCartItem"
+          >+</view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="gh-cart-panel-footer">
+      <view class="gh-cart-panel-checkout-btn" bindtap="onGoToCart">去结算</view>
+    </view>
+  </view>
+
+  <!-- 订单完成通知弹窗 -->
+  <view class="notif-popup {{showNotif ? 'notif-show' : ''}}" wx:if="{{showNotif}}">
+    <view class="notif-icon">{{notifIcon}}</view>
+    <view class="notif-content">
+      <text class="notif-title">{{notifTitle}}</text>
+      <text class="notif-desc">{{notifDesc}}</text>
+    </view>
+    <view class="notif-close" bindtap="closeNotif">✕</view>
+  </view>
+</view>

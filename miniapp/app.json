@@ -1,0 +1,20 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/bind/bind",
+    "pages/girl-home/girl-home",
+    "pages/cart/cart",
+    "pages/orders/orders",
+    "pages/boy-home/boy-home",
+    "pages/boy-dishes/boy-dishes",
+    "pages/settings/settings"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#ff6b81",
+    "navigationBarTitleText": "爱心厨房",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#fff5f5"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

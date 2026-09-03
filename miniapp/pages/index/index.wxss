@@ -1,0 +1,329 @@
+.splash {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #fff5f5 0%, #fff 50%, #f0f4f8 100%);
+}
+
+.splash-logo {
+  font-size: 72px;
+  margin-bottom: 12px;
+  animation: heartbeat 2s ease infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.splash-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ff6b81;
+  margin-bottom: 8px;
+}
+
+.splash-desc {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 48px;
+}
+
+/* ===== 角色选择 ===== */
+.role-btns {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.role-btn {
+  flex: 1;
+  background: #fff;
+  border: 2px solid #f0e0e0;
+  border-radius: 20px;
+  padding: 28px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.role-btn::after {
+  border: none;
+}
+
+.role-btn:active {
+  transform: scale(0.96);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.girl-btn {
+  border-color: #ff8fa3;
+  background: linear-gradient(135deg, #fff5f7, #fff);
+}
+
+.boy-btn {
+  border-color: #80bfff;
+  background: linear-gradient(135deg, #f0f7ff, #fff);
+}
+
+.role-avatar {
+  font-size: 52px;
+  margin-bottom: 10px;
+}
+
+.role-label {
+  font-size: 17px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.role-sub {
+  font-size: 12px;
+  color: #999;
+}
+
+/* ===== 授权登录卡片 ===== */
+.auth-card {
+  width: 100%;
+  max-width: 360px;
+  background: #fff;
+  border-radius: 24px;
+  padding: 32px 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.auth-desc {
+  font-size: 13px;
+  color: #999;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+/* ===== 头像选择 ===== */
+.avatar-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.avatar-preview {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fff5f7, #ffe8ec);
+  border: 3px solid #ffd0d8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  box-shadow: 0 4px 12px rgba(255, 107, 129, 0.15);
+}
+
+.avatar-tip {
+  font-size: 12px;
+  color: #bbb;
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+.emoji-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 280px;
+}
+
+.emoji-item {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.emoji-item:active {
+  transform: scale(0.88);
+}
+
+.emoji-item-active {
+  background: linear-gradient(135deg, #fff0f3, #ffe0e6);
+  border-color: #ff6b81;
+  box-shadow: 0 2px 8px rgba(255, 107, 129, 0.25);
+  transform: scale(1.1);
+}
+
+/* ===== 表单输入 ===== */
+.nick-row, .phone-row {
+  margin-bottom: 16px;
+}
+
+.nick-input, .phone-input {
+  background: #f8f8f8;
+  border: 2px solid #f0f0f0;
+  border-radius: 14px;
+  padding-left: 18px;
+  padding-right: 18px;
+  font-size: 16px;
+  width: 100%;
+  height: 52px;
+  line-height: 52px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  overflow: visible;
+}
+
+.nick-input:focus, .phone-input:focus {
+  border-color: #ff6b81;
+}
+
+/* PIN 密码 */
+.pin-row {
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.pin-label {
+  font-size: 13px;
+  color: #999;
+  display: block;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.pin-box-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.pin-box {
+  width: 38px;
+  height: 44px;
+  border: 2px solid #e8e8e8;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.pin-box-filled {
+  border-color: #ff6b81;
+  background: #fff5f7;
+}
+
+/* 光标闪烁：当前等待输入的空格子 */
+.pin-box-cursor {
+  border-color: #ff6b81;
+  background: #fff5f7;
+}
+
+.pin-box-cursor::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 18px;
+  background: #ff6b81;
+  border-radius: 1px;
+  animation: cursorBlink 1s step-end infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.pin-box-sep {
+  width: 4px;
+  height: 2px;
+  background: #ddd;
+  border-radius: 1px;
+}
+
+.pin-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff6b81;
+  animation: dotPop 0.2s ease;
+}
+
+@keyframes dotPop {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+.pin-hidden-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  left: -100px;
+  top: 0;
+}
+
+/* ===== 确认按钮 ===== */
+.confirm-btn {
+  background: linear-gradient(135deg, #ff6b81, #ff8fa3) !important;
+  color: #fff !important;
+  border-radius: 28px;
+  padding: 16px;
+  font-size: 17px;
+  font-weight: 600;
+  width: 100%;
+  border: none;
+  box-shadow: 0 6px 20px rgba(255, 107, 129, 0.3);
+  margin-top: 8px;
+}
+
+.confirm-btn::after {
+  border: none;
+}
+
+.confirm-btn:active {
+  transform: scale(0.97);
+}
+
+/* ===== 返回角色选择 ===== */
+.back-role {
+  text-align: center;
+  margin-top: 20px;
+  padding: 8px;
+}
+
+.back-role text {
+  font-size: 14px;
+  color: #999;
+}
